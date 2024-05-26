@@ -22,7 +22,7 @@ modules:
         sources:
           - type: archive
             url: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v4.5.0/amc-squad-data-v4.5.0.tar.bz2
-            sha256: "2660a5ce4642ec30e8e64982dbee996b8f1fd5b5fa2dda3b71fd8abedd5cb9db"
+            sha256: "4409691ad47c33c6e5ea09cf36ebf6234f1c496f8092fb376278220f9f69f364"
             x-checker-data:
               type: json
               url: https://gitlab.com/api/v4/projects/fpiesche%2Famc-squad-data/repository/tags
