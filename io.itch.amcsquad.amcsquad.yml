@@ -97,11 +97,6 @@ modules:
         commands:
           - cd /app/bin
           - ./mapster32
-      - type: script
-        dest-filename: io.itch.amcsquad.progress_import.sh
-        commands:
-          - cd /app/bin
-          - ./progress_import
     buildsystem: simple
     builddir: true
     build-options:
