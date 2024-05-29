@@ -22,7 +22,7 @@ modules:
         sources:
           - type: archive
             url: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v4.5.0/amc-squad-data-v4.5.0.tar.bz2
-            sha256: "4409691ad47c33c6e5ea09cf36ebf6234f1c496f8092fb376278220f9f69f364"
+            sha256: 4409691ad47c33c6e5ea09cf36ebf6234f1c496f8092fb376278220f9f69f364
             x-checker-data:
               type: json
               url: https://gitlab.com/api/v4/projects/fpiesche%2Famc-squad-data/repository/tags
@@ -36,9 +36,12 @@ modules:
           - type: patch
             path: amcdata-linux-bestiary-fix.patch
         build-commands:
-          - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.amcsquad.sh" meta/io.itch.amcsquad.amcsquad.desktop
-          - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.mapster32.sh" meta/io.itch.amcsquad.mapster32.desktop
-          - desktop-file-edit --set-key="Icon" --set-value="io.itch.amcsquad.amcsquad.mapster32" meta/io.itch.amcsquad.mapster32.desktop
+          - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.amcsquad.sh"
+            meta/io.itch.amcsquad.amcsquad.desktop
+          - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.mapster32.sh"
+            meta/io.itch.amcsquad.mapster32.desktop
+          - desktop-file-edit --set-key="Icon" --set-value="io.itch.amcsquad.amcsquad.mapster32"
+            meta/io.itch.amcsquad.mapster32.desktop
           - install -Dm 644 meta/io.itch.amcsquad.amcsquad.desktop -t /app/share/applications
           - install -Dm 644 meta/io.itch.amcsquad.mapster32.desktop -T /app/share/applications/io.itch.amcsquad.amcsquad.mapster32.desktop
           - install -Dm 644 meta/io.itch.amcsquad.amcsquad.png -t /app/share/icons/hicolor/256x256/apps
@@ -50,8 +53,8 @@ modules:
           - cp -rv ./* /app/bin/
     sources:
       - type: archive
-        url: https://github.com/dibollinger/amcduke32/archive/refs/tags/4.5.0.zip
-        sha256: "fdaf3b6b8f0657aa4eb3b43100d9771a557ec1c6ff4c3db074bbec268fe64f64"
+        url: https://api.github.com/repos/dibollinger/amcduke32/zipball/refs/tags/v3.6.5-3
+        sha256: ea9852e03b4432968bb3199b0c156963a59eef7f5147510adf0b49e281e774c4
         x-checker-data:
           type: json
           url: https://api.github.com/repos/dibollinger/amcduke32/tags
@@ -104,7 +107,7 @@ modules:
     buildsystem: simple
     builddir: true
     build-options:
-      cxxflags: "-std=c++20"
+      cxxflags: -std=c++20
     build-commands:
       - make -j$FLATPAK_BUILDER_N_JOBS FORCEDEBUG=1 LF=
       - install -Dm 755 amcsquad -t /app/bin
