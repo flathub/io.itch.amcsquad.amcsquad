@@ -54,8 +54,8 @@ modules:
         sha256: "fdaf3b6b8f0657aa4eb3b43100d9771a557ec1c6ff4c3db074bbec268fe64f64"
         x-checker-data:
           type: json
-          url: https://api.github.com/repos/dibollinger/amcduke32/tags
-          version-query: .[0].name
+          url: https://api.github.com/repos/dibollinger/amcduke32/releases
+          version-query: .[0].tag_name
           url-query: .[0].zipball_url
       # Silence compiler warning spam
       - type: patch
