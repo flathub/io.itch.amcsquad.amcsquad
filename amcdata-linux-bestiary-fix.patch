@@ -1,0 +1,13 @@
+diff --git a/CODE/BESTIARY_DEFS.CON b/CODE/BESTIARY_DEFS.CON
+index 1105f01..155cab9 100644
+--- a/CODE/BESTIARY_DEFS.CON
++++ b/CODE/BESTIARY_DEFS.CON
+@@ -69,7 +69,7 @@ ends
+ defstate bst_check_hasdef
+ 	// if string 1380 is not an empty string then we had a def
+ 	qstrcmp 1380 1399 bst_hasdef
+-	abs bst_hasdef
++	ifn bst_hasdef 0 set bst_hasdef 1
+ ends
+ 
+ defstate bst_cycloid_defs

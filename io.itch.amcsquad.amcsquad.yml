@@ -32,13 +32,17 @@ modules:
               version-query: $tag | sub(\"^[vV]\"; \"\")
               is-main-source: true
               url-template: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v$version/amc-squad-data-v$version.tar.bz2
+          # Fix bestiary on Linux
+          - type: patch
+            path: amcdata-linux-bestiary-fix.patch
         build-commands:
           - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.amcsquad.sh" meta/io.itch.amcsquad.amcsquad.desktop
           - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.mapster32.sh" meta/io.itch.amcsquad.mapster32.desktop
+          - desktop-file-edit --set-key="Icon" --set-value="io.itch.amcsquad.amcsquad.mapster32" meta/io.itch.amcsquad.mapster32.desktop
           - install -Dm 644 meta/io.itch.amcsquad.amcsquad.desktop -t /app/share/applications
-          - install -Dm 644 meta/io.itch.amcsquad.mapster32.desktop -t /app/share/applications
+          - install -Dm 644 meta/io.itch.amcsquad.mapster32.desktop -T /app/share/applications/io.itch.amcsquad.amcsquad.mapster32.desktop
           - install -Dm 644 meta/io.itch.amcsquad.amcsquad.png -t /app/share/icons/hicolor/256x256/apps
-          - install -Dm 644 meta/io.itch.amcsquad.mapster32.png -t /app/share/icons/hicolor/256x256/apps
+          - install -Dm 644 meta/io.itch.amcsquad.mapster32.png -T /app/share/icons/hicolor/256x256/apps/io.itch.amcsquad.amcsquad.mapster32.png
           - install -Dm 644 meta/io.itch.amcsquad.amcsquad.metainfo.xml -t /app/share/metainfo
           - install -Dm 644 meta/io.itch.amcsquad.amcsquad.releases.xml -t /app/share/metainfo/releases
           - rm -rf meta
@@ -50,8 +54,8 @@ modules:
         sha256: "fdaf3b6b8f0657aa4eb3b43100d9771a557ec1c6ff4c3db074bbec268fe64f64"
         x-checker-data:
           type: json
-          url: https://api.github.com/repos/dibollinger/amcduke32/tags
-          version-query: .[0].name
+          url: https://api.github.com/repos/dibollinger/amcduke32/releases
+          version-query: .[0].tag_name
           url-query: .[0].zipball_url
       # Silence compiler warning spam
       - type: patch
