@@ -9,7 +9,7 @@ index 1105f01..155cab9 100644
 -	abs bst_hasdef
 +	ifn bst_hasdef 0 set bst_hasdef 1
  ends
-
+ 
  defstate bst_cycloid_defs
 diff --git a/CODE/GUI/BESTIARY.CON b/CODE/GUI/BESTIARY.CON
 index 022afee..e31aca5 100644
@@ -21,7 +21,7 @@ index 022afee..e31aca5 100644
  		qstrcmp 1500 1395 bst_hasdef
 -		abs bst_hasdef
 +		ifn bst_hasdef 0 set bst_hasdef 1
-
+ 
  		ife bst_hasdef 1
   			screentext STARTALPHANUM 110 168 25000 0 0 1500 0 0 16 0 5 8 1 1 0 0 0 xdim ydim
  		else
@@ -29,6 +29,6 @@ index 022afee..e31aca5 100644
  			qstrcmp 1501 1395 bst_hasdef
 -			abs bst_hasdef
 +			ifn bst_hasdef 0 set bst_hasdef 1
-
+ 
  			ifn bst_hasdef 1
  				qputs 1501 We forgot to add specific armor type text for this one.
