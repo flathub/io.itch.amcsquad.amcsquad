@@ -162,7 +162,7 @@ index ce29653e5..864cc78f2 100644
 +        fil = buildvfs_fopen_write(savefilename.c_str());
          // don't copy the mod dir into sv.path
 -        Bstrcpy(sv.path, fn + (len-(ARRAY_SIZE(SaveName)-1)));
-+        Bstrcpy(sv.path, fn + 4);
++        Bstrcpy(sv.path, savefilename.c_str());
      }
  
      if (!fil)
