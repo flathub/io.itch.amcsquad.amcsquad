@@ -51,7 +51,7 @@ modules:
     sources:
       - type: archive
         url: https://api.github.com/repos/dibollinger/amcduke32/zipball/4.5.0
-        sha256: fdaf3b6b8f0657aa4eb3b43100d9771a557ec1c6ff4c3db074bbec268fe64f64
+        sha256: b07cfdf8409ecd313b900e83e41afc8445106914743adf897c0c7a1d084c7216
         x-checker-data:
           type: json
           url: https://api.github.com/repos/dibollinger/amcduke32/releases
