@@ -46,26 +46,33 @@ diff --git a/source/duke3d/src/savegame.cpp b/source/duke3d/src/savegame.cpp
 index ce29653e5..864cc78f2 100644
 --- a/source/duke3d/src/savegame.cpp
 +++ b/source/duke3d/src/savegame.cpp
-@@ -149,7 +149,8 @@ static void ReadSaveGameHeaders_CACHE1D(BUILDVFS_FIND_REC *f)
+@@ -149,10 +149,8 @@ static void ReadSaveGameHeaders_CACHE1D(BUILDVFS_FIND_REC *f)
  
      for (; f != nullptr; f = f->next)
      {
--        char const * fn = f->name;
+-        if (isSavegameDir)
+-            Bsnprintf(savefn, BMAX_PATH, "%s/%s", savegame_dir, f->name);
+-        else
+-            Bstrncpy(savefn, f->name, BMAX_PATH);
 +        std::filesystem::path full_save_path((std::filesystem::path(redirect_to_user_data("saves")) / f->name).lexically_normal());
 +        char const * fn = full_save_path.c_str();
-         buildvfs_kfd fil = kopen4loadfrommod(fn, 0);
+         buildvfs_kfd fil = kopen4loadfrommod(savefn, 0);
          if (fil == buildvfs_kfd_invalid)
              continue;
-@@ -209,9 +210,9 @@ static int countcache1dfind(BUILDVFS_FIND_REC *f)
+@@ -209,12 +210,10 @@ static int countcache1dfind(BUILDVFS_FIND_REC *f)
  
  static void ReadSaveGameHeaders_Internal(void)
  {
 -    static char const DefaultPath[] = "/", SavePattern[] = "*.esv";
--
 -    BUILDVFS_FIND_REC *findfiles_default = klistpath(DefaultPath, SavePattern, BUILDVFS_FIND_FILE);
+-
+-    char localSaveDir[BMAX_PATH];
+-    Bsnprintf(localSaveDir, BMAX_PATH, "/%s", savegame_dir);
+-    BUILDVFS_FIND_REC *findfiles_savegame_dir = klistpath(localSaveDir, SavePattern, BUILDVFS_FIND_FILE);
 +    static char const SavePattern[] = "*.esv";
 +    std::string DefaultPath(redirect_to_user_data("saves/"));
 +    BUILDVFS_FIND_REC *findfiles_default = klistpath(DefaultPath.c_str(), SavePattern, BUILDVFS_FIND_FILE);
++    BUILDVFS_FIND_REC *findfiles_savegame_dir = klistpath(DefaultPath.c_str(), SavePattern, BUILDVFS_FIND_FILE);
  
      // potentially overallocating but programmatically simple
      int const numfiles = countcache1dfind(findfiles_default);
@@ -112,7 +119,7 @@ index ce29653e5..864cc78f2 100644
  }
  
  void G_DeleteOldSaves(void)
-@@ -833,40 +828,41 @@ int32_t G_SavePlayer(savebrief_t & sv, bool isAutoSave)
+@@ -903,41 +903,28 @@ int32_t G_SavePlayer(savebrief_t & sv, bool isAutoSave)
      Net_WaitForServer();
      ready2send = 0;
  
@@ -122,7 +129,6 @@ index ce29653e5..864cc78f2 100644
      errno = 0;
      buildvfs_FILE fil;
 +    std::string savefilename;
- 
      if (sv.isValid())
      {
 -        if (G_ModDirSnprintf(fn, sizeof(fn), "%s", sv.path))
@@ -131,37 +137,27 @@ index ce29653e5..864cc78f2 100644
 -            goto saveproblem;
 -        }
 -        fil = buildvfs_fopen_write(fn);
-+        // if (G_ModDirSnprintf(fn, sizeof(fn), "%s", sv.path))
-+        // {
-+        //     LOG_F(ERROR, "Unable to save %s: unknown fatal error.", sv.path);
-+        //     goto saveproblem;
-+        // }
 +        savefilename = get_writable_filename_subdir(sv.path, "saves");
 +        fil = buildvfs_fopen_write(savefilename.c_str());
      }
      else
      {
--        static char const SaveName[] = "save0000.esv";
--        int const len = G_ModDirSnprintfLite(fn, ARRAY_SIZE(fn), SaveName);
+-        char* savegamePath = getSavegamePath("save0000.esv");
+-        int const len = G_ModDirSnprintfLite(fn, ARRAY_SIZE(fn), savegamePath);
 -        if (len >= ARRAY_SSIZE(fn)-1)
 -        {
 -            LOG_F(ERROR, "Resulting save filename is too long.");
+-            Xfree(savegamePath);
 -            goto saveproblem;
 -        }
 -        char * zeros = fn + (len-8);
 -        fil = savecounter.opennextfile(fn, zeros);
 -        savecounter.count++;
-+        // int const len = G_ModDirSnprintf(fn, ARRAY_SIZE(fn), SaveName);
-+        // if (len >= ARRAY_SSIZE(fn)-1)
-+        // {
-+        //     LOG_F(ERROR, "Resulting save filename is too long.");
-+        //     goto saveproblem;
-+        // }
-+
 +        savefilename = get_numbered_writable_filename(get_writable_filename_subdir(fn, "saves"), ".esv");
 +        fil = buildvfs_fopen_write(savefilename.c_str());
          // don't copy the mod dir into sv.path
--        Bstrcpy(sv.path, fn + (len-(ARRAY_SIZE(SaveName)-1)));
+-        Bstrcpy(sv.path, fn + (len-(sizeof(savegamePath)-1)));
+-        Xfree(savegamePath);
 +        Bstrcpy(sv.path, savefilename.c_str());
      }
  
