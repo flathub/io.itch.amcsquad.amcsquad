@@ -1,6 +1,6 @@
 app-id: io.itch.amcsquad.amcsquad
 runtime: org.freedesktop.Platform
-runtime-version: "24.08"
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 command: io.itch.amcsquad.amcsquad.sh
 
@@ -50,10 +50,10 @@ modules:
           - cp -rv ./* /app/bin/
     sources:
       - type: archive
-        url: https://api.github.com/repos/dibollinger/amcduke32/zipball/4.5.0
+        url: https://api.github.com/repos/dibollinger/amcduke32/zipball/5.0.0
         archive-type: zip
         dest-filename: amcduke.zip
-        sha256: b07cfdf8409ecd313b900e83e41afc8445106914743adf897c0c7a1d084c7216
+        sha256: 9107197d0cd6e02933f642e0a08e628c69e4b4254746da6ccfe31991266e4c4e
         x-checker-data:
           type: json
           url: https://api.github.com/repos/dibollinger/amcduke32/releases
