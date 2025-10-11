@@ -16,13 +16,45 @@ finish-args:
 modules:
   - shared-modules/glu/glu-9.json
 
+  - name: amc-data
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v5.1.1/amc-squad-data-v5.1.1.tar.bz2
+        sha256: 807c25866cac4ddb3ca2e136a95f2cacbdffa0d5f0a4621ae4d5cfe2c4e858cf
+        x-checker-data:
+          type: json
+          url: https://gitlab.com/api/v4/projects/fpiesche%2Famc-squad-data/repository/tags
+          tag-query: first | .name
+          commit-query: first | .commit.id
+          timestamp-query: first | .commit.committed_date
+          version-query: $tag | sub(\"^[vV]\"; \"\")
+          is-main-source: true
+          url-template: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v$version/amc-squad-data-v$version.tar.bz2
+    build-commands:
+      - desktop-file-edit --set-key="Exec" --set-value="${FLATPAK_ID}.sh"
+        meta/${FLATPAK_ID}.desktop
+      - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.mapster32.sh"
+        meta/io.itch.amcsquad.mapster32.desktop
+      - desktop-file-edit --set-key="Icon" --set-value="${FLATPAK_ID}.mapster32"
+        meta/io.itch.amcsquad.mapster32.desktop
+      - install -Dm 644 meta/${FLATPAK_ID}.desktop -t /app/share/applications
+      - install -Dm 644 meta/io.itch.amcsquad.mapster32.desktop -T /app/share/applications/${FLATPAK_ID}.mapster32.desktop
+      - install -Dm 644 meta/${FLATPAK_ID}.png -t /app/share/icons/hicolor/256x256/apps
+      - install -Dm 644 meta/io.itch.amcsquad.mapster32.png -T /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.mapster32.png
+      - install -Dm 644 meta/${FLATPAK_ID}.metainfo.xml -t /app/share/metainfo
+      - rm -rf meta
+      - rm -rf Media
+      - mkdir -p /app/bin
+      - cp -rv ./* /app/bin/
+
   - name: amcduke32
     sources:
       - type: archive
-        url: https://github.com/dibollinger/amcduke32/archive/6d02d65df90e6196ec1294b96a96eaaa162489e4.zip
+        url: https://github.com/dibollinger/amcduke32/archive/refs/tags/5.1.0.zip
         archive-type: zip
         dest-filename: amcduke.zip
-        sha256: 2152554679cb2dcd5778a492bf404550ab7ef3e70f382710855055035f943326
+        sha256: 095358f60055dc2912f084873c1faec2383a724b571971d90c363a13d3335beb
         x-checker-data:
           type: json
           url: https://api.github.com/repos/dibollinger/amcduke32/releases
@@ -61,6 +93,8 @@ modules:
       # Redirect savegames to XDG_DATA_HOME
       - type: patch
         path: amcduke32_11_redirect_savegames.patch
+      - type: patch
+        path: amcduke32_12_fix_mapart.patch
       # launcher script
       - type: script
         dest-filename: io.itch.amcsquad.amcsquad.sh
@@ -82,35 +116,3 @@ modules:
       - install -Dm 755 mapster32 -t /app/bin
       - install -Dm 755 io.itch.amcsquad.amcsquad.sh -t /app/bin
       - install -Dm 755 io.itch.amcsquad.mapster32.sh -t /app/bin
-
-  - name: amc-data
-    buildsystem: simple
-    sources:
-      - type: archive
-        url: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v5.0.0/amc-squad-data-v5.0.0.tar.bz2
-        sha256: 6e2307b5c56b1966771b91746aab612b2f202e81ffb6953a9082d7755412e7a3
-        x-checker-data:
-          type: json
-          url: https://gitlab.com/api/v4/projects/fpiesche%2Famc-squad-data/repository/tags
-          tag-query: first | .name
-          commit-query: first | .commit.id
-          timestamp-query: first | .commit.committed_date
-          version-query: $tag | sub(\"^[vV]\"; \"\")
-          is-main-source: true
-          url-template: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v$version/amc-squad-data-v$version.tar.bz2
-    build-commands:
-      - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.amcsquad.sh"
-        meta/io.itch.amcsquad.amcsquad.desktop
-      - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.mapster32.sh"
-        meta/io.itch.amcsquad.mapster32.desktop
-      - desktop-file-edit --set-key="Icon" --set-value="io.itch.amcsquad.amcsquad.mapster32"
-        meta/io.itch.amcsquad.mapster32.desktop
-      - install -Dm 644 meta/io.itch.amcsquad.amcsquad.desktop -t /app/share/applications
-      - install -Dm 644 meta/io.itch.amcsquad.mapster32.desktop -T /app/share/applications/io.itch.amcsquad.amcsquad.mapster32.desktop
-      - install -Dm 644 meta/io.itch.amcsquad.amcsquad.png -t /app/share/icons/hicolor/256x256/apps
-      - install -Dm 644 meta/io.itch.amcsquad.mapster32.png -T /app/share/icons/hicolor/256x256/apps/io.itch.amcsquad.amcsquad.mapster32.png
-      - install -Dm 644 meta/io.itch.amcsquad.amcsquad.metainfo.xml -t /app/share/metainfo
-      - rm -rf meta
-      - rm -rf Media
-      - mkdir -p /app/bin
-      - cp -rv ./* /app/bin/

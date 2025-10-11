@@ -119,19 +119,19 @@ index ce29653e5..864cc78f2 100644
  }
  
  void G_DeleteOldSaves(void)
-@@ -903,41 +903,28 @@ int32_t G_SavePlayer(savebrief_t & sv, bool isAutoSave)
+@@ -896,41 +896,27 @@ int32_t G_SavePlayer(savebrief_t & sv, bool isAutoSave)
      Net_WaitForServer();
      ready2send = 0;
  
 -    char fn[BMAX_PATH];
-+    char fn[BMAX_PATH] = "save";
++    char fn[BMAX_PATH] = "saves";
  
      errno = 0;
      buildvfs_FILE fil;
 +    std::string savefilename;
      if (sv.isValid())
      {
--        if (G_ModDirSnprintf(fn, sizeof(fn), "%s", sv.path))
+-        if (G_ModDirSnprintf(fn, BMAX_PATH, "%s", sv.path))
 -        {
 -            LOG_F(ERROR, "Unable to save %s: unknown fatal error.", sv.path);
 -            goto saveproblem;
@@ -142,9 +142,9 @@ index ce29653e5..864cc78f2 100644
      }
      else
      {
--        char* savegamePath = getSavegamePath("save0000.esv");
--        int const len = G_ModDirSnprintfLite(fn, ARRAY_SIZE(fn), savegamePath);
--        if (len >= ARRAY_SSIZE(fn)-1)
+-        char* savegamePath = createInitialSavegamePath();
+-        int const len = G_ModDirSnprintfLite(fn, BMAX_PATH, savegamePath);
+-        if (len >= BMAX_PATH - 1)
 -        {
 -            LOG_F(ERROR, "Resulting save filename is too long.");
 -            Xfree(savegamePath);
@@ -153,11 +153,11 @@ index ce29653e5..864cc78f2 100644
 -        char * zeros = fn + (len-8);
 -        fil = savecounter.opennextfile(fn, zeros);
 -        savecounter.count++;
+-        // don't copy the mod dir into sv.path
+-        Bstrncpy(sv.path, fn + (len - Bstrlen(savegamePath)), BMAX_PATH);
+-        Xfree(savegamePath);
 +        savefilename = get_numbered_writable_filename(get_writable_filename_subdir(fn, "saves"), ".esv");
 +        fil = buildvfs_fopen_write(savefilename.c_str());
-         // don't copy the mod dir into sv.path
--        Bstrcpy(sv.path, fn + (len-(sizeof(savegamePath)-1)));
--        Xfree(savegamePath);
 +        Bstrcpy(sv.path, savefilename.c_str());
      }
  

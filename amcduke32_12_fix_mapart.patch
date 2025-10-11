@@ -1,0 +1,40 @@
+diff --git a/source/build/src/defs.cpp b/source/build/src/defs.cpp
+index 13a628982..29a939754 100644
+--- a/source/build/src/defs.cpp
++++ b/source/build/src/defs.cpp
+@@ -2783,14 +2783,12 @@ static int32_t defsparser(scriptfile *script)
+                 break;
+ 
+             char mappath[BMAX_PATH];
+-            char* resolved_ptr = Brealpath(strtemp, mappath);
+-            if (resolved_ptr == NULL)
+-            {
++            std::filesystem::path stdpath = std::filesystem::path(strtemp).lexically_normal();
++            if (! std::filesystem::exists(stdpath)) {
+                 LOG_F(ERROR, "mapart: could not find map file: %s", strtemp);
+                 break;
+             }
+-            Bcorrectfilename(mappath, 0);
+-
++            stdpath.string().copy(mappath, stdpath.string().length()+1);
+             intptr_t prevArtPtr = -1;
+             if (h_mapartpaths.items) prevArtPtr = hash_find(&h_mapartpaths, mappath);
+ 
+diff --git a/source/build/src/tiles.cpp b/source/build/src/tiles.cpp
+index d8579b3f9..bc40fe7bf 100644
+--- a/source/build/src/tiles.cpp
++++ b/source/build/src/tiles.cpp
+@@ -157,10 +157,9 @@ void artSetupMapArt(const char *filename)
+             startidx++;
+ 
+         char realmappath[BMAX_PATH];
+-        char* realpath_ptr = Brealpath(&filename[startidx], realmappath);
+-        if (realpath_ptr != NULL)
+-        {
+-            Bcorrectfilename(realmappath, 0);
++        std::filesystem::path stdpath = std::filesystem::path(filename).lexically_normal();
++        if (std::filesystem::exists(stdpath)) {
++            stdpath.string().copy(realmappath, stdpath.string().length()+1);
+             mapartarrayptr = hash_find(&h_mapartpaths, realmappath);
+             if (mapartarrayptr != -1)
+             {
