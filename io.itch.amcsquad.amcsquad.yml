@@ -20,8 +20,8 @@ modules:
     buildsystem: simple
     sources:
       - type: archive
-        url: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v5.1.1/amc-squad-data-v5.1.1.tar.bz2
-        sha256: 807c25866cac4ddb3ca2e136a95f2cacbdffa0d5f0a4621ae4d5cfe2c4e858cf
+        url: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v5.2.0/amc-squad-data-v5.2.0.tar.bz2
+        sha256: c55e7aa74a89433a311fc5749bbac8ca30c338e2f1f534d63703611f40043cd8
         x-checker-data:
           type: json
           url: https://gitlab.com/api/v4/projects/fpiesche%2Famc-squad-data/repository/tags
