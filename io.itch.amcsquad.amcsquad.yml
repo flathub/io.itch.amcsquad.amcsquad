@@ -24,13 +24,11 @@ modules:
         sha256: c55e7aa74a89433a311fc5749bbac8ca30c338e2f1f534d63703611f40043cd8
         x-checker-data:
           type: json
-          url: https://gitlab.com/api/v4/projects/fpiesche%2Famc-squad-data/repository/tags
-          tag-query: first | .name
-          commit-query: first | .commit.id
-          timestamp-query: first | .commit.committed_date
-          version-query: $tag | sub(\"^[vV]\"; \"\")
+          url: https://gitlab.com/api/v4/projects/fpiesche%2Famc-squad-data/releases
+          tag-query: .[0].tag_name
+          version-query: $tag | sub("^[vV]"; "")
           is-main-source: true
-          url-template: https://gitlab.com/fpiesche/amc-squad-data/-/archive/v$version/amc-squad-data-v$version.tar.bz2
+          url-query: .[0].assets.sources[] | select(.format=="tar.bz2").url
     build-commands:
       - desktop-file-edit --set-key="Exec" --set-value="${FLATPAK_ID}.sh" meta/${FLATPAK_ID}.desktop
       - desktop-file-edit --set-key="Exec" --set-value="io.itch.amcsquad.mapster32.sh"
